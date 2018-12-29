@@ -57,8 +57,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
 
         //Compass
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
         image = (ImageView) findViewById(R.id.imageViewCompass);
         compassAngle = (TextView) findViewById(R.id.angle);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -70,7 +68,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
     }
 
-    @Override
+
+   @Override
     public void onSensorChanged(SensorEvent event) {
         float degree = Math.round(event.values[0]);
         compassAngle.setText("Heading : " + Float.toString(degree) + " degrees");
@@ -89,12 +88,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
 
-    @Override
+  /*  @Override
     protected void onResume() {
         super.onResume();
         sensorManager.registerListener(this, compass, SensorManager.SENSOR_DELAY_NORMAL);
 
-    }
+    }*/
 
     @Override
     protected void onPause() {
@@ -152,4 +151,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 </osm-script>
      */
 }
+
 //TODO - set the put request and store result in a file.
+
