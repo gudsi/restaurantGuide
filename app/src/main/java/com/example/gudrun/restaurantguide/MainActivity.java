@@ -10,19 +10,28 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.net.URL;
+
+import javax.net.ssl.HttpsURLConnection;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
     TextView lat;
     TextView lon;
+
+    TextView testText;
 
     //Compass
     private SensorManager sensorManager;
@@ -31,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private TextView compassAngle;
     private float currentDegree = 0f;
 
+    Button OSMButton;
     // @RequiresApi(api = Build.VERSION_CODES.M)
 
     @Override
@@ -66,8 +76,22 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             sensorManager.registerListener(this, compass, SensorManager.SENSOR_DELAY_NORMAL);
 
         }
+
+        OSMButton = (Button) findViewById(R.id.button);
+        OSMButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    callOSM();
+            }
+        });
+
+        testText=(TextView)findViewById(R.id.testText);
     }
 
+        void callOSM()  {
+            testText.setText("hello");
+            new NetworkAsyncTask().execute();
+        }
 
    @Override
     public void onSensorChanged(SensorEvent event) {
