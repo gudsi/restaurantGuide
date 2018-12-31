@@ -2,6 +2,9 @@ package com.example.gudrun.restaurantguide;
 
 import android.os.AsyncTask;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,10 +16,13 @@ import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 
 class NetworkAsyncTask extends AsyncTask  {
+
+    String response = "";
+
     @Override
     protected Object doInBackground(Object[] objects) {
         URL url = null;
-        String response = "";
+
         try {
             url = new URL("https://lz4.overpass-api.de/api/interpreter");
             HttpsURLConnection httpsCon = (HttpsURLConnection) url.openConnection();
@@ -35,7 +41,7 @@ class NetworkAsyncTask extends AsyncTask  {
             out.close();
 
             int responseCode=httpsCon.getResponseCode();
-
+            System.out.println(httpsCon.getContentType());
             if (responseCode == HttpsURLConnection.HTTP_OK) {
                 String line;
                 BufferedReader br=new BufferedReader(new InputStreamReader(httpsCon.getInputStream()));
@@ -46,7 +52,6 @@ class NetworkAsyncTask extends AsyncTask  {
             else {
                 response="";
             }
-
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (ProtocolException e) {
@@ -58,3 +63,4 @@ class NetworkAsyncTask extends AsyncTask  {
     }
 
 }
+

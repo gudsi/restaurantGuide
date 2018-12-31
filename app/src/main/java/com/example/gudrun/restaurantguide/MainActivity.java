@@ -20,18 +20,16 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.net.URL;
+import org.json.JSONObject;
 
-import javax.net.ssl.HttpsURLConnection;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
     TextView lat;
     TextView lon;
 
-    TextView testText;
+    TextView showResponse;
 
     //Compass
     private SensorManager sensorManager;
@@ -41,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private float currentDegree = 0f;
 
     Button OSMButton;
+    JSONObject test = null;
     // @RequiresApi(api = Build.VERSION_CODES.M)
 
     @Override
@@ -85,12 +84,33 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
         });
 
-        testText=(TextView)findViewById(R.id.testText);
+        showResponse =(TextView)findViewById(R.id.testText);
     }
 
         void callOSM()  {
-            testText.setText("hello");
-            new NetworkAsyncTask().execute();
+            showResponse.setText("hello");
+          //  new NetworkAsyncTask().execute();
+
+            final NetworkAsyncTask httpsTask = new NetworkAsyncTask();
+            httpsTask.execute();
+            new Thread(new Runnable(){
+                @Override
+                public void run() {
+                    try {
+                        final Object response = httpsTask.get();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                showResponse.setText(Objects.toString(response));
+                            }
+                        });
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+
         }
 
    @Override
