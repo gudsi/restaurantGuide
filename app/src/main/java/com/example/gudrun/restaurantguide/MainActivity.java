@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private ImageView image;
     private TextView compassAngle;
     private float currentDegree = 0f;
-
+     Spinner spinner;
     Button OSMButton;
     JSONObject test = null;
     // @RequiresApi(api = Build.VERSION_CODES.M)
@@ -50,6 +50,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         lon = (TextView) findViewById(R.id.textView4);
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         LocationListener ll = new myLocationListener();
+        
+        spinner=(Spinner)findViewById(R.id.idSpinner);
+        String[] distancevalues= {"5000","10000","15000"};
+        ArrayAdapter<String> adapter= new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,distancevalues);
+        spinner.setAdapter(adapter);
+        int value = Integer.parseInt((String) spinner.getSelectedItem());
 
         // allowing app to get location of phone
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -62,7 +68,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             // for Activity#requestPermissions for more details.
             return;
         }
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, ll);
+       //The minimum distance will be the distance selected
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, value, ll);
 
 
         //Compass
