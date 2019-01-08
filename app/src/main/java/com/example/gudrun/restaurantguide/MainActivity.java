@@ -16,8 +16,10 @@ import android.view.Menu;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.json.JSONObject;
@@ -37,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private ImageView image;
     private TextView compassAngle;
     private float currentDegree = 0f;
-     Spinner spinner;
+    Spinner spinner;
     Button OSMButton;
     JSONObject test = null;
     // @RequiresApi(api = Build.VERSION_CODES.M)
@@ -119,6 +121,36 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }).start();
 
         }
+
+    // method to Compute distance according to haversine formula
+    public static Double calculatedistance(long latitude1,long latitude2, long longitude1,long longitude2) {
+        int R = 6371;//earth radius in kilometers
+        Double latoneRad = Math.toRadians(latitude1);//convert latitude one degree to radian
+        Double lattwoRad =  Math.toRadians(latitude2);//convert latitude two degree to radian
+        Double latdiffRad= Math.toRadians(latitude2-latitude1);
+        Double londiffRad= Math.toRadians(longitude2-longitude1);
+        //calculate a
+        Double a = Math.sin(latdiffRad/2)*Math.sin(latdiffRad/2)+Math.cos(latoneRad)*Math.cos(lattwoRad)*Math.sin(londiffRad/2)*Math.sin(londiffRad/2);
+        //calculate c
+        Double c= 2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+        //calculate d
+        Double d=R*c;
+        return d;
+    }
+
+    // method to Compute bearing
+    public static Double calculatebearing(long latitude1,long latitude2, long longitude1,long longitude2) {
+        Double latoneRad = Math.toRadians(latitude1);//convert latitude one degree to radian
+        Double lattwoRad = Math.toRadians(latitude2);//convert latitude two degree to radian
+        Double londiffRad= Math.toRadians(longitude2-longitude1);//difference of longitude 1 & 2 to radian
+        //calculate y
+        Double y = (Math.sin(londiffRad)*Math.cos(lattwoRad));
+        //calculate x
+        Double x = (Math.cos(latoneRad)*Math.sin(lattwoRad)-Math.sin(latoneRad)*Math.cos(lattwoRad)*Math.cos(londiffRad));
+        //calculate bearing formula
+        Double b=  Math.toDegrees(Math.atan2(y,x));
+        return b;
+    }
 
    @Override
     public void onSensorChanged(SensorEvent event) {
