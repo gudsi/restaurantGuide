@@ -2,6 +2,7 @@ package com.example.gudrun.restaurantguide;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -18,13 +19,26 @@ import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.json.JSONObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
+import java.io.File;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
@@ -41,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private float currentDegree = 0f;
     Spinner spinner;
     Button OSMButton;
-    JSONObject test = null;
+    NodeList receveidRestaurant;
     // @RequiresApi(api = Build.VERSION_CODES.M)
 
     @Override
@@ -90,16 +104,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onClick(View v) {
                     callOSM();
+                Intent intent = new Intent(getApplicationContext() ,ListActivity.class);
+                startActivity(intent);
             }
         });
-
-        showResponse =(TextView)findViewById(R.id.testText);
+       // showResponse =(TextView)findViewById(R.id.testText);
     }
 
         void callOSM()  {
-            showResponse.setText("hello");
-          //  new NetworkAsyncTask().execute();
-
+            //  new NetworkAsyncTask().execute();
             final NetworkAsyncTask httpsTask = new NetworkAsyncTask();
             httpsTask.execute();
             new Thread(new Runnable(){
@@ -110,7 +123,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                showResponse.setText(Objects.toString(response));
+  //                              showResponse.setText(Objects.toString(response));
+                                parsexml(Objects.toString(response));
                             }
                         });
 
@@ -121,6 +135,36 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }).start();
 
         }
+
+    public NodeList parsexml(String response) {
+        try {
+
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = dbFactory.newDocumentBuilder();
+            Document doc = builder.parse(new InputSource(new StringReader(response)));
+            doc.getDocumentElement().normalize();
+
+            System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
+            NodeList nList = doc.getElementsByTagName("tag");
+            receveidRestaurant = doc.getElementsByTagName("node");    // list of every restaurant
+
+            for (int temp = 0; temp < nList.getLength(); temp++) {
+
+                Node nNode = nList.item(temp);
+                System.out.println("node: " + nNode.getAttributes());
+                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                    //System.out.println("node: " + nNode.getAttributes());
+                    Element eElement = (Element) nNode;
+
+                    System.out.println("key : " + eElement.getAttribute("k"));
+                    System.out.println("value : " + eElement.getAttribute("v"));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return receveidRestaurant;
+    }
 
     // method to Compute distance according to haversine formula
     public static Double calculatedistance(long latitude1,long latitude2, long longitude1,long longitude2) {

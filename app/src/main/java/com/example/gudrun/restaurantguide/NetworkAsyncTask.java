@@ -2,9 +2,6 @@ package com.example.gudrun.restaurantguide;
 
 import android.os.AsyncTask;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -48,8 +45,7 @@ class NetworkAsyncTask extends AsyncTask  {
                 while ((line=br.readLine()) != null) {
                     response+=line;
                 }
-            }
-            else {
+            } else {
                 response="";
             }
         } catch (MalformedURLException e) {
