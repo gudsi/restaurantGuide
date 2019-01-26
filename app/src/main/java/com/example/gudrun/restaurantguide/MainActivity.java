@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private float currentDegree = 0f;
     Spinner spinner;
     Button OSMButton;
-    NodeList receveidRestaurant;
+
     // @RequiresApi(api = Build.VERSION_CODES.M)
 
     @Override
@@ -103,9 +103,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         OSMButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    callOSM();
-                Intent intent = new Intent(getApplicationContext() ,ListActivity.class);
-                startActivity(intent);
+                callOSM();
+
             }
         });
        // showResponse =(TextView)findViewById(R.id.testText);
@@ -120,14 +119,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 public void run() {
                     try {
                         final Object response = httpsTask.get();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-  //                              showResponse.setText(Objects.toString(response));
-                                parsexml(Objects.toString(response));
-                            }
-                        });
+                        //NodeList nodeList = parsexml();
+//                        runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//  //                              showResponse.setText(Objects.toString(response));
+//
+//                            }
+//                        });
 
+                        Intent intent = new Intent(getApplicationContext(), ListActivity.class);
+                        intent.putExtra("nodeList", Objects.toString(response));
+                        startActivity(intent);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -136,35 +139,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         }
 
-    public NodeList parsexml(String response) {
-        try {
-
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = dbFactory.newDocumentBuilder();
-            Document doc = builder.parse(new InputSource(new StringReader(response)));
-            doc.getDocumentElement().normalize();
-
-            System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
-            NodeList nList = doc.getElementsByTagName("tag");
-            receveidRestaurant = doc.getElementsByTagName("node");    // list of every restaurant
-
-            for (int temp = 0; temp < nList.getLength(); temp++) {
-
-                Node nNode = nList.item(temp);
-                System.out.println("node: " + nNode.getAttributes());
-                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-                    //System.out.println("node: " + nNode.getAttributes());
-                    Element eElement = (Element) nNode;
-
-                    System.out.println("key : " + eElement.getAttribute("k"));
-                    System.out.println("value : " + eElement.getAttribute("v"));
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return receveidRestaurant;
-    }
 
     // method to Compute distance according to haversine formula
     public static Double calculatedistance(long latitude1,long latitude2, long longitude1,long longitude2) {
