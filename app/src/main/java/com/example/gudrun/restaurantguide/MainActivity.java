@@ -34,8 +34,10 @@ Spinner spinner;
 
     }
     void callOSM()  {
+        int radius = Integer.parseInt((String) spinner.getSelectedItem());
+
         //  new NetworkAsyncTask().execute();
-        final NetworkAsyncTask httpsTask = new NetworkAsyncTask();
+        final NetworkAsyncTask httpsTask = new NetworkAsyncTask(radius,0,0);
         httpsTask.execute();
         new Thread(new Runnable(){
             @Override
