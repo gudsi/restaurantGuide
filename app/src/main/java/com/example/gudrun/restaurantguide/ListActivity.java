@@ -16,8 +16,12 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import java.io.StringReader;
+import java.lang.reflect.Array;
 import java.security.DomainCombiner;
+import java.security.Key;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -39,10 +43,6 @@ public class ListActivity extends AppCompatActivity {
         String[] names =new String[10];
         lv=findViewById(R.id.listview);
         parsexml(getIntent().getStringExtra("nodeList")).toArray(names);
-
-       // ArrayAdapter<String> adapter=new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,names);
-       // ArrayAdapter<Node> adapter=new ArrayAdapter<Node>(this,android.R.layout.simple_list_item_1,restaurants);
-       // lv.setAdapter(adapter);
     }
     private static String getValue(String tag, Element element) {
         NodeList nodeList = element.getElementsByTagName(tag).item(0).getChildNodes();
@@ -51,6 +51,8 @@ public class ListActivity extends AppCompatActivity {
     }
     public ArrayList<String> parsexml(String response) {
         ArrayList<String> tmp = new ArrayList<>();
+        final Map<Integer, Node> sortedList = new HashMap<>();
+        int counter = 0;
         try {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -72,6 +74,8 @@ public class ListActivity extends AppCompatActivity {
                     System.out.println("key : " + eElement.getAttribute("k"));
                     if(eElement.getAttribute("k").equals("name")) {
                         tmp.add(eElement.getAttribute("v"));
+                        sortedList.put(counter, eElement.getParentNode());
+                        counter++;
                     }
                     System.out.println("value : " + eElement.getAttribute("v"));
                 }
@@ -83,8 +87,13 @@ public class ListActivity extends AppCompatActivity {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                     Toast.makeText(getApplicationContext(),"Item Clicked:"+i,Toast.LENGTH_SHORT).show();
+                    Element item = (Element) sortedList.get(i);
+                    String lat = item.getAttribute("lat");
+                    String lon = item.getAttribute("lon");
+
                     Intent intent = new Intent(getApplicationContext(), Compass.class);
-                    intent.putExtra("item", Objects.toString(getApplicationContext()));
+                    intent.putExtra("lat", lat);
+                    intent.putExtra("lon", lon);
                     startActivity(intent);
                 }
             });
