@@ -21,7 +21,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".List" />
-        <activity android:name=".ListActivity"></activity>
+        <activity android:name=".ListActivity" />
+        <activity android:name=".Compass"></activity>
     </application>
 
 </manifest>

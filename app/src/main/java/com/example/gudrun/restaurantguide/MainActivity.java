@@ -42,8 +42,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
+    TextView lat;
+    TextView lon;
 
-    
+    TextView showResponse;
 
     //Compass
     private SensorManager sensorManager;
@@ -60,7 +62,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-       
+        lat = (TextView) findViewById(R.id.textView2);
+        lon = (TextView) findViewById(R.id.textView4);
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         LocationListener ll = new myLocationListener();
         
@@ -91,9 +94,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         compass = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
         if (compass != null) {
-
             sensorManager.registerListener(this, compass, SensorManager.SENSOR_DELAY_NORMAL);
-
         }
 
         OSMButton = (Button) findViewById(R.id.button);
@@ -104,7 +105,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
             }
         });
-       // showResponse =(TextView)findViewById(R.id.testText);
     }
 
         void callOSM()  {
@@ -124,7 +124,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 //
 //                            }
 //                        });
-
                         Intent intent = new Intent(getApplicationContext(), ListActivity.class);
                         intent.putExtra("nodeList", Objects.toString(response));
                         startActivity(intent);
@@ -205,8 +204,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
-
-
     class myLocationListener implements LocationListener{
         @Override
         public void onLocationChanged(Location location) {
