@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         lon = (TextView) findViewById(R.id.textView4);
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         LocationListener ll = new myLocationListener();
-        
+
         spinner=(Spinner)findViewById(R.id.idSpinner);
         String[] distancevalues= {"5000","10000","15000"};
         ArrayAdapter<String> adapter= new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,distancevalues);

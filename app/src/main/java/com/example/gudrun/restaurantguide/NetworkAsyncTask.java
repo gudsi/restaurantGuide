@@ -40,7 +40,7 @@ class NetworkAsyncTask extends AsyncTask  {
             OutputStreamWriter out = new OutputStreamWriter(
                     httpsCon.getOutputStream());
             out.write(call +
-                    "<around radius=\"1500.0\" lat=\"41.89248629819397\" lon=\"12.51119613647461\"/>\n" +
+                    "<around radius=\"" + radius + "\" lat=\"41.89248629819397\" lon=\"12.51119613647461\"/>\n" +
                     "  </query>\n" +
                     "  <print/>\n" +
                     "</osm-script>");
