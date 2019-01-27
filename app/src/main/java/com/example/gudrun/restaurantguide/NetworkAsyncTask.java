@@ -14,11 +14,23 @@ import javax.net.ssl.HttpsURLConnection;
 
 class NetworkAsyncTask extends AsyncTask  {
 
+    private final int radius;
+    private final int longitude;
+    private final int latitude;
+
+
+    NetworkAsyncTask(int radius, int longitude, int latitude) {
+        this.radius = radius;
+        this.longitude = longitude;
+        this.latitude = latitude;
+    }
+
     String response = "";
 
     @Override
     protected Object doInBackground(Object[] objects) {
         URL url = null;
+        String call = "<osm-script>\n" + "  <query type=\"node\">\n" + "<has-kv k=\"amenity\" v=\"restaurant\"/>\n" +  "<has-kv k=\"wheelchair\" v=\"yes\"/>\n";
 
         try {
             url = new URL("https://lz4.overpass-api.de/api/interpreter");
@@ -27,11 +39,8 @@ class NetworkAsyncTask extends AsyncTask  {
             httpsCon.setRequestMethod("PUT");
             OutputStreamWriter out = new OutputStreamWriter(
                     httpsCon.getOutputStream());
-            out.write("<osm-script>\n" +
-                    "  <query type=\"node\">\n" +
-                    "    <has-kv k=\"amenity\" v=\"restaurant\"/>\n" +
-                    "<has-kv k=\"wheelchair\" v=\"yes\"/>\n" +
-                    "<around radius=\"1000.0\" lat=\"41.89248629819397\" lon=\"12.51119613647461\"/>\n" +
+            out.write(call +
+                    "<around radius=\"1500.0\" lat=\"41.89248629819397\" lon=\"12.51119613647461\"/>\n" +
                     "  </query>\n" +
                     "  <print/>\n" +
                     "</osm-script>");
