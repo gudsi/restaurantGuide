@@ -112,8 +112,7 @@ public class MainActivity extends AppCompatActivity {
             if(location!=null){
                 pLat=location.getLatitude();
                 pLong=location.getLongitude();
-                lat.setText(Double.toString(pLat));
-                lon.setText(Double.toString(pLong));
+                
             }
         }
 
