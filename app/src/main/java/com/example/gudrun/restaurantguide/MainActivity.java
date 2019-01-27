@@ -32,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     TextView lon;
     Spinner spinner;
     Button OSMButton;
+    double pLong = 0;
+    double pLat = 0;
 
     // @RequiresApi(api = Build.VERSION_CODES.M)
 
@@ -78,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         int radius = Integer.parseInt((String) spinner.getSelectedItem());
 
         //  new NetworkAsyncTask().execute();
-        final NetworkAsyncTask httpsTask = new NetworkAsyncTask(radius,0,0);
+        final NetworkAsyncTask httpsTask = new NetworkAsyncTask(radius,pLong,pLat);
         httpsTask.execute();
         new Thread(new Runnable(){
             @Override
@@ -108,8 +110,8 @@ public class MainActivity extends AppCompatActivity {
         public void onLocationChanged(Location location) {
             // TODO Auto-generated method stub
             if(location!=null){
-                double pLat=location.getLatitude();
-                double pLong=location.getLongitude();
+                pLat=location.getLatitude();
+                pLong=location.getLongitude();
                 lat.setText(Double.toString(pLat));
                 lon.setText(Double.toString(pLong));
             }

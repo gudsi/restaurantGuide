@@ -15,11 +15,11 @@ import javax.net.ssl.HttpsURLConnection;
 class NetworkAsyncTask extends AsyncTask  {
 
     private final int radius;
-    private final int longitude;
-    private final int latitude;
+    private final double longitude;
+    private final double latitude;
 
 
-    NetworkAsyncTask(int radius, int longitude, int latitude) {
+    NetworkAsyncTask(int radius, double longitude, double latitude) {
         this.radius = radius;
         this.longitude = longitude;
         this.latitude = latitude;
@@ -40,7 +40,7 @@ class NetworkAsyncTask extends AsyncTask  {
             OutputStreamWriter out = new OutputStreamWriter(
                     httpsCon.getOutputStream());
             out.write(call +
-                    "<around radius=\"" + radius + "\" lat=\"41.89248629819397\" lon=\"12.51119613647461\"/>\n" +
+                    "<around radius=\"" + radius + "\" lat=\"" + latitude + "\" lon=\"" + longitude + "\"/>\n" +
                     "  </query>\n" +
                     "  <print/>\n" +
                     "</osm-script>");
