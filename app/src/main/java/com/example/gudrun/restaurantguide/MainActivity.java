@@ -26,19 +26,10 @@ import android.widget.TextView;
 
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener {
+public class MainActivity extends AppCompatActivity {
 
     TextView lat;
     TextView lon;
-
-    TextView showResponse;
-
-    //Compass
-    private SensorManager sensorManager;
-    private Sensor compass;
-    private ImageView image;
-    private TextView compassAngle;
-    private float currentDegree = 0f;
     Spinner spinner;
     Button OSMButton;
 
@@ -73,16 +64,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
        //The minimum distance will be the distance selected
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, value, ll);
 
-
-        //Compass
-        image = (ImageView) findViewById(R.id.imageViewCompass);
-        compassAngle = (TextView) findViewById(R.id.angle);
-        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        compass = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
-        if (compass != null) {
-            sensorManager.registerListener(this, compass, SensorManager.SENSOR_DELAY_NORMAL);
-        }
-
         OSMButton = (Button) findViewById(R.id.button);
         OSMButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,16 +74,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         });
     }
 
-        void callOSM()  {
-            //  new NetworkAsyncTask().execute();
-            final NetworkAsyncTask httpsTask = new NetworkAsyncTask();
-            httpsTask.execute();
-            new Thread(new Runnable(){
-                @Override
-                public void run() {
-                    try {
-                        final Object response = httpsTask.get();
-                        //NodeList nodeList = parsexml();
+    void callOSM()  {
+        //  new NetworkAsyncTask().execute();
+        final NetworkAsyncTask httpsTask = new NetworkAsyncTask();
+        httpsTask.execute();
+        new Thread(new Runnable(){
+            @Override
+            public void run() {
+                try {
+                    final Object response = httpsTask.get();
+                    //NodeList nodeList = parsexml();
 //                        runOnUiThread(new Runnable() {
 //                            @Override
 //                            public void run() {
@@ -110,86 +91,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 //
 //                            }
 //                        });
-                        Intent intent = new Intent(getApplicationContext(), ListActivity.class);
-                        intent.putExtra("nodeList", Objects.toString(response));
-                        startActivity(intent);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    Intent intent = new Intent(getApplicationContext(), ListActivity.class);
+                    intent.putExtra("nodeList", Objects.toString(response));
+                    startActivity(intent);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            }).start();
-
-        }
-
-
-    // method to Compute distance according to haversine formula
-    public static Double calculatedistance(long latitude1,long latitude2, long longitude1,long longitude2) {
-        int R = 6371;//earth radius in kilometers
-        Double latoneRad = Math.toRadians(latitude1);//convert latitude one degree to radian
-        Double lattwoRad =  Math.toRadians(latitude2);//convert latitude two degree to radian
-        Double latdiffRad= Math.toRadians(latitude2-latitude1);
-        Double londiffRad= Math.toRadians(longitude2-longitude1);
-        //calculate a
-        Double a = Math.sin(latdiffRad/2)*Math.sin(latdiffRad/2)+Math.cos(latoneRad)*Math.cos(lattwoRad)*Math.sin(londiffRad/2)*Math.sin(londiffRad/2);
-        //calculate c
-        Double c= 2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
-        //calculate d
-        Double d=R*c;
-        return d;
+            }
+        }).start();
     }
 
-    // method to Compute bearing
-    public static Double calculatebearing(long latitude1,long latitude2, long longitude1,long longitude2) {
-        Double latoneRad = Math.toRadians(latitude1);//convert latitude one degree to radian
-        Double lattwoRad = Math.toRadians(latitude2);//convert latitude two degree to radian
-        Double londiffRad= Math.toRadians(longitude2-longitude1);//difference of longitude 1 & 2 to radian
-        //calculate y
-        Double y = (Math.sin(londiffRad)*Math.cos(lattwoRad));
-        //calculate x
-        Double x = (Math.cos(latoneRad)*Math.sin(lattwoRad)-Math.sin(latoneRad)*Math.cos(lattwoRad)*Math.cos(londiffRad));
-        //calculate bearing formula
-        Double b=  Math.toDegrees(Math.atan2(y,x));
-        return b;
-    }
-
-   @Override
-    public void onSensorChanged(SensorEvent event) {
-        float degree = Math.round(event.values[0]);
-        compassAngle.setText("Heading : " + Float.toString(degree) + " degrees");
-        RotateAnimation ra = new RotateAnimation(currentDegree, -degree, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        ra.setDuration(210);
-        ra.setFillAfter(true);
-        image.startAnimation(ra);
-        currentDegree = -degree;
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return true;
-    }
-
-
-  /*  @Override
-    protected void onResume() {
-        super.onResume();
-        sensorManager.registerListener(this, compass, SensorManager.SENSOR_DELAY_NORMAL);
-
-    }*/
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        sensorManager.unregisterListener(this);
-
-
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-    }
     class myLocationListener implements LocationListener{
         @Override
         public void onLocationChanged(Location location) {
