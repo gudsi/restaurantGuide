@@ -4,23 +4,14 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.RotateAnimation;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -34,8 +25,6 @@ public class MainActivity extends AppCompatActivity {
     Button OSMButton;
     double pLong = 0;
     double pLat = 0;
-
-    // @RequiresApi(api = Build.VERSION_CODES.M)
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
 
         // allowing app to get location of phone
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
             //    Activity#requestPermissions
             // here to request the missing permissions, and then overriding
             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
@@ -87,14 +75,6 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 try {
                     final Object response = httpsTask.get();
-                    //NodeList nodeList = parsexml();
-//                        runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//  //                              showResponse.setText(Objects.toString(response));
-//
-//                            }
-//                        });
                     Intent intent = new Intent(getApplicationContext(), ListActivity.class);
                     intent.putExtra("nodeList", Objects.toString(response));
                     startActivity(intent);
@@ -135,18 +115,4 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
-
-    /*
-    <osm-script>
-  <query type="node">
-    <has-kv k="amenity" v="restaurant"/>
-<has-kv k="wheelchair" v="yes"/>
-<around radius="1000.0" lat="41.89248629819397" lon="12.51119613647461"/>
-  </query>
-  <print/>
-</osm-script>
-     */
 }
-
-//TODO - set the put request and store result in a file.
-

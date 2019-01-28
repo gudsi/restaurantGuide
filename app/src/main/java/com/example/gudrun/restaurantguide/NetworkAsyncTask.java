@@ -47,7 +47,6 @@ class NetworkAsyncTask extends AsyncTask  {
             out.close();
 
             int responseCode=httpsCon.getResponseCode();
-            System.out.println(httpsCon.getContentType());
             if (responseCode == HttpsURLConnection.HTTP_OK) {
                 String line;
                 BufferedReader br=new BufferedReader(new InputStreamReader(httpsCon.getInputStream()));

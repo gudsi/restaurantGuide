@@ -16,13 +16,9 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import java.io.StringReader;
-import java.lang.reflect.Array;
-import java.security.DomainCombiner;
-import java.security.Key;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -30,8 +26,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 public class ListActivity extends AppCompatActivity {
 
     ListView lv;
-    //String[] names={"value1","value2","value3","value4","value5"};
-    NodeList restaurants;
     NodeList receveidRestaurant;
 
     @Override
@@ -39,16 +33,13 @@ public class ListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
         String nodeListString = getIntent().getStringExtra("nodeList");
-        System.out.println("nlString: " + nodeListString);
         String[] names =new String[10];
         lv=findViewById(R.id.listview);
+        // parse the received XML including the restaurants in the environment
         parsexml(getIntent().getStringExtra("nodeList")).toArray(names);
     }
-    private static String getValue(String tag, Element element) {
-        NodeList nodeList = element.getElementsByTagName(tag).item(0).getChildNodes();
-        Node node = nodeList.item(0);
-        return node.getNodeValue();
-    }
+
+    // parse information needed
     public ArrayList<String> parsexml(String response) {
         ArrayList<String> tmp = new ArrayList<>();
         final Map<Integer, Node> sortedList = new HashMap<>();
@@ -58,30 +49,25 @@ public class ListActivity extends AppCompatActivity {
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(new InputSource(new StringReader(response)));
 
-
-            System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
             NodeList nList = doc.getElementsByTagName("tag");
             receveidRestaurant = doc.getElementsByTagName("node");    // list of every restaurant
 
+            // iterate over tags to find the name of the restaurant
             for (int temp = 0; temp < nList.getLength(); temp++) {
-
                 Node nNode = nList.item(temp);
                 System.out.println("node: " + nNode.getAttributes());
                 if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-                    //System.out.println("node: " + nNode.getAttributes());
                     Element eElement = (Element) nNode;
-                    System.out.println("\nRestaurant Names : " + eElement.getElementsByTagName("name"));
-                    System.out.println("key : " + eElement.getAttribute("k"));
-                    if(eElement.getAttribute("k").equals("name")) {
+                    if (eElement.getAttribute("k").equals("name")) {
                         tmp.add(eElement.getAttribute("v"));
                         sortedList.put(counter, eElement.getParentNode());
                         counter++;
                     }
-                    System.out.println("value : " + eElement.getAttribute("v"));
                 }
             }
             ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,tmp );
 
+            // If a restaurant is selected, go to the compass with the selected lat and lon
             lv.setAdapter(arrayAdapter);
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
